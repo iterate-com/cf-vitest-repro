@@ -18,13 +18,11 @@ export default mergeConfig(
   defineConfig({
     test: {
       workspace: [
-        defineWorkersConfig(async () => {
-          // Prepare D1 migrations etc. Not needed for this repro though.
-          // await readD1Migrations(migrationsPath)
-          
-          return {
+        mergeConfig(
+          coreConfig,
+          defineWorkersConfig({
             test: {
-              name: 'workers',
+              name: "workers",
               // setupFiles: ["src/workers/test-setup.ts"],
               include: ["src/workers/**/*.test.{ts,tsx}"],
               poolOptions: {
@@ -33,18 +31,18 @@ export default mergeConfig(
                 },
               },
             },
-          };
-        }),
+          })
+        ),
         mergeConfig(
           coreConfig,
           defineConfig({
             test: {
               name: "node",
               exclude: [...defaultExclude, "src/workers/**"],
-              environment: "node"
-            }
+              environment: "node",
+            },
           })
-        )
+        ),
       ],
     },
   })
